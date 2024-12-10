@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://cascade.sdsc.edu/";
+        const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var folders = [1996, 1997, 1998, 1999, 2000, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022];
+
+        // makeFolders();
+        // updateFolderIndex();
+
+        function updateFolderIndex() {
+            folders.forEach(function (f, i) {
+                readAsset({
+                    type: "page",
+                    path: "news/" + f + "/index",
+                    siteName: "sdsc_stage_2024",
+                }).then(function (result) {
+                    console.log(result);
+                    result.apiReturn.asset.page.metadata.displayName = f + " Archive";
+                    result.apiReturn.asset.page.metadata.title = f + " Archive";
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            });
+        }
+
+        function makeFolders() {
+            folders.forEach(function (f, i) {
+                console.log(f);
+                copyAsset({
+                    type: "folder",
+                    path: "news/1995",
+                    siteName: "sdsc_stage_2024",
+                    copyParameters: {
+                        newName: f,
+                        destinationContainerIdentifier: {
+                            type: "folder",
+                            path: {
+                                path: "news",
+                                siteName: "sdsc_stage_2024"
+                            }
+                        }
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

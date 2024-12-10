@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <!--     
+    1 - [CMS] Copy year folders to new Events site
+    2 - [CMS] Add old DD fields to new DD at the end. Merge all fields you can, for example: Details, Contact/Website 
+    3 - [CMS] Add old MdS fields to new MdS
+    4 - [.JS] Delete old copied index files in new Events site
+    5 - [CMS] Bulk change all old events CT to new Events CT
+    6 - [.JS] Run mapping functions on year(s) folder 
+    -->
+
+    <script>
+        const cmsUrl = "https://mchenry.cascadecms.com/";
+        const cmsAPI = "";
+    </script>
+    <script crossorigin="anonymous" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script src="default.js"></script>
+    <script>
+
+        var oldSite = "Calendar";
+        var oldEventsCT = "4a8681f6ac1e00966a771d8704f8d977";
+        var oldEventsIndexCT = "4a868214ac1e00966a771d87c5ea4e75";
+        var newSite = "Events";
+        var newEventsCT = "23ad4d8dac1e006c212b0d29989fd90f";
+
+        // updatePages("2025");
+        // deleteOldIndexFiles();
+        // deleteOldIndexFiles("test");
+        // fieldValueTest(oldEventsCT, "result.apiReturn.asset.page.structuredData.structuredDataNodes[7].structuredDataNodes[0].text");
+
+        function filterConfig() {
+            filter1 = {
+                name: "category",
+                type: "multiselect",
+                prefix: "::CONTENT-XML-SELECTOR::",
+                value: ""
+            }
+            filter10 = {
+                name: "featuredOnHomepage",
+                type: "dropdown",
+                value: ""
+            }
+        }
+
+        function filterMap(page) {
+            page.metadata.dynamicFields[2].fieldValues.forEach(function (oldFilter, i) {
+                if (oldFilter.value === "yes") {
+                    filter10.value = "Yes";
+                }
+            });
+            page.metadata.dynamicFields[1].fieldValues.forEach(function (oldFilter, i) {
+                if (oldFilter.value === "Academic Calendar") {
+                    filter1.value = filter1.value + filter1.prefix + "Academic Calendar";
+                }
+                else if (oldFilter.value === "ADN Information Sessions") {
+                    filter1.value = filter1.value + filter1.prefix + "Nursing Information Sessions";
+                }
+                else if (oldFilter.value === "Agriculture Events") {
+                    filter1.value = filter1.value + filter1.prefix + "Center for Agrarian Learning";
+                }
+                else if (oldFilter.value === "Athletics") {
+                    filter1.value = filter1.value + filter1.prefix + "Athletics";
+                }
+                else if (oldFilter.value === "Career Services") {
+                    filter1.value = filter1.value + filter1.prefix + "Career Services";
+                }
+                else if (oldFilter.value === "College Rep Visits") {
+                    filter1.value = filter1.value + filter1.prefix + "College Rep Visits";
+                }
+                else if (oldFilter.value === "Diversity") {
+                    filter1.value = filter1.value + filter1.prefix + "Diversity and Inclusion";
+                }
+                else if (oldFilter.value === "Events") {
+                    filter1.value = filter1.value + filter1.prefix + "Events";
+                }
+                else if (oldFilter.value === "Financial Aid Assistance") {
+                    filter1.value = filter1.value + filter1.prefix + "Financial Aid Assistance";
+                }
+                else if (oldFilter.value === "Fine Arts") {
+                    filter1.value = filter1.value + filter1.prefix + "Fine Arts";
+                }
+                else if (oldFilter.value === "Foundation Events") {
+                    filter1.value = filter1.value + filter1.prefix + "Foundation";
+                }
+                else if (oldFilter.value === "HIT Information Sessions") {
+                    filter1.value = filter1.value + filter1.prefix + "Health Information Management Info Sessions";
+                }
+                else if (oldFilter.value === "Information Sessions") {
+                    filter1.value = filter1.value + filter1.prefix + "Information Sessions";
+                }
+                else if (oldFilter.value === "LISI") {
+                    filter1.value = filter1.value + filter1.prefix + "Liebman Institute for Science Innovation";
+                }
+                else if (oldFilter.value === "OTA Information Sessions") {
+                    filter1.value = filter1.value + filter1.prefix + "Occupational Therapy Assistant Info Sessions";
+                }
+                else if (oldFilter.value === "Planetarium") {
+                    filter1.value = filter1.value + filter1.prefix + "Planetarium";
+                }
+                else if (oldFilter.value === "PTA Information Sessions") {
+                    filter1.value = filter1.value + filter1.prefix + "Physical Therapist Assistant Info Sessions";
+                }
+                else if (oldFilter.value === "Select Saturday Hours") {
+                    filter1.value = filter1.value + filter1.prefix + "Select Saturday Hours";
+                }
+                else if (oldFilter.value === "Student Life Events") {
+                    filter1.value = filter1.value + filter1.prefix + "Student Activities";
+                }
+                else if (oldFilter.value === "Tax Assistance Clinics") {
+                    filter1.value = filter1.value + filter1.prefix + "Tax Assistance Clinics";
+                }
+            });
+
+            page.structuredData.structuredDataNodes[7].structuredDataNodes[1].text = filter1.value;
+            page.structuredData.structuredDataNodes[7].structuredDataNodes[4].text = filter10.value;
+        }
+
+    </script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@
 // const cmsUrl = "https://unk.cascadecms.com/";
 /* Step 2: Create and add your cascade API Key. */
 // Note: Additional details on API Setup found here- https://www.hannonhill.com/cascadecms/latest/cascade-basics/account-settings.html#APIKey*/
-// const cmsAPI = "e540eb9d-c641-415b-aa1f-6671982c08dd";
+// const cmsAPI = "";
 // Note: If you get the error "The requested asset does not exist" and you're not trying to access an existing asset, please double check your API Key.
 /* Step 3: Save */
 
@@ -210,4 +210,102 @@ function publishAsset(a) {
 				}
 			});
 	});
+}
+
+function dateToDateTime(d) {
+	var d = new Date(d);
+	return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString();
+}
+
+function v(text) {
+	if (text === null || text === undefined || text === "") {
+		return "";
+	} else {
+		return text;
+	}
+}
+
+function w(text) {
+	if (text === null || text === undefined || text === "") {
+		return "";
+	} else {
+		text = text.replaceAll("&amp;#160;", " ");
+		text = text.replaceAll("&#160;", " ");
+		text = decodeHTMLEntities(text);
+		text = text.replaceAll("<br>", "<br />");
+		text = text.replaceAll("&", "&amp;");
+		return text;
+	}
+}
+
+function camelCase(data) {
+	var text = data
+		.replace("2", "Two")
+		.replaceAll("3", "Three")
+		.replaceAll("4", "Four")
+		.replaceAll("5", "Five")
+		.replaceAll("w/ ", "")
+		.replaceAll("with ", "")
+		.replaceAll("the ", "")
+		.replaceAll(/[^a-zA-Z0-9 .]+/g, "");
+	if (data.includes(" ")) {
+		var dataSplit = text.split(" ");
+		dataSplit.forEach(function (dS, i) {
+			if (i == 0) {
+				text = dS.toLowerCase();
+			} else {
+				text = text + dS;
+			}
+		});
+	} else {
+		text = text.toLowerCase();
+	}
+	return text;
+}
+
+function decodeHTMLEntities(text) {
+	var textArea = document.createElement("textarea");
+	textArea.innerHTML = text;
+	return textArea.value;
+}
+
+function encodeHTMLEntities(text) {
+	var textArea = document.createElement("textarea");
+	textArea.innerText = text;
+	return textArea.innerHTML;
+}
+
+function fieldValueTest(ct, n) {
+	listSubscribers({
+		type: "contenttype",
+		id: ct,
+	})
+		.then(function (result) {
+			console.log(result);
+			result.apiReturn.subscribers.forEach(function (sub) {
+				if (sub.type == "page") {
+					readAsset({
+						type: "page",
+						id: sub.id,
+					})
+						.then(function (result) {
+							console.log(result);
+							console.log(result.apiReturn.asset.page.path);
+							if (eval(n) != undefined) {
+								console.log("DEFINED: " + eval(n));
+							} else {
+								console.log("UNDEFINED");
+							}
+							console.log("-----------------");
+						})
+						.catch(function (error) {
+							console.log(error);
+							console.log("-----------------");
+						});
+				}
+			});
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 }

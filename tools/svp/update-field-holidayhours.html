@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://svp-admin.cascadecms.com/";
+        const cmsAPI = "";
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+
+        Papa.parse('hours.csv', {
+            header: true,
+            download: true,
+            skipEmptyLines: true,
+            transformHeader: function (h) {
+                return h.replace(/[\W_]+/g, "").trim();
+            },
+            complete: function (result) {
+                // console.log(result);
+                updateHours(result.data);
+            }
+        });
+
+        function updateHours(hours) {
+            console.log(hours);
+            listSubscribers({
+                type: "contenttype",
+                id: "b5aef7820a00009d354dc255ef84982d",
+            }).then(function (result) {
+                console.log(result);
+                var pages = result.apiReturn.subscribers;
+                pages.forEach(function (page, i) {
+                    if (!page.path.path.includes("migrated")) {
+                        setTimeout(function () { // for delay if too fast
+                            // if (i < 5) { // for testing
+                            readAsset({
+                                type: "page",
+                                id: page.id,
+                            }).then(function (result) {
+                                var siteCode = result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[0].text;
+                                if (siteCode != undefined) {
+                                    for (let i = 0; i < hours.length; i++) {
+                                        if (siteCode == hours[i].HospitalCode) {
+                                            // console.log(siteCode);
+                                            // console.log(result);
+                                            // console.log(result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[8].structuredDataNodes[3].text);
+                                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[8].structuredDataNodes[3].text = hours[i].NoticeBoxHTML;
+                                            editAsset({
+                                                asset: result.apiReturn,
+                                            }).then(function (result) {
+                                                console.log(result);
+                                            }).catch(function (error) {
+                                                console.log(error);
+                                            });
+                                        }
+                                    }
+                                }
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                            // }
+                        }, i * 200);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>

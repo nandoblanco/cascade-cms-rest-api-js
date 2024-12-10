@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://messiah.cascadecms.com/";
+        const cmsAPI = "";
+        const ddID = "d4415a1f0a0000a914f2c7c0b82a00f4";
+        const site = "_global_cascade_assets";
+
+
+    </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify.min.js"></script> -->
+    <!-- <script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script> -->
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        // console.log(result);
+        // console.log(result.apiReturn.subscribers);
+        var buildings = [
+            {
+                "block": "30671ff00a0000a91a38c036e4226958"
+            },
+            {
+                "block": "3067205f0a0000a91a38c03657d1464b",
+                "currentID": "989",
+                "parentID": "2974"
+            },
+            {
+                "block": "2b7d3b0e0a0000a91a38c036327d6fd7"
+            },
+            {
+                "block": "30671fbe0a0000a91a38c03615f1541b",
+                "currentID": "1043",
+                "parentID": "233"
+            },
+            {
+                "block": "3067202f0a0000a91a38c03643352ce8",
+                "currentID": "1088"
+            },
+            {
+                "block": "30671fce0a0000a91a38c036f7d8b328",
+                "currentID": "1087",
+                "parentID": "2974"
+            },
+            {
+                "block": "306720080a0000a91a38c036f69bd5ad",
+                "currentID": "205"
+            },
+            {
+                "block": "306720e30a0000a91a38c0365de84141",
+                "currentID": "998"
+            },
+            {
+                "block": "3067211b0a0000a91a38c036ccdca64e",
+                "currentID": "1065",
+                "parentID": "227"
+            },
+            {
+                "block": "306720fc0a0000a91a38c03696216e27",
+                "currentID": "999"
+            },
+            {
+                "block": "306720ef0a0000a91a38c036453037d6",
+                "currentID": "1122",
+                "parentID": "233"
+            },
+            {
+                "block": "306720e30a0000a91a38c036bbe5d713",
+                "currentID": "1352"
+            },
+            {
+                "block": "306720e80a0000a91a38c03664865c0c",
+                "currentID": "1064",
+                "parentID": "1093"
+            },
+            {
+                "block": "306721640a0000a91a38c0360be02189",
+                "currentID": "1030",
+                "parentID": "211"
+            },
+            {
+                "block": "306721b90a0000a91a38c036e3498ad0",
+                "currentID": "207"
+            },
+            {
+                "block": "3067218e0a0000a91a38c03659d9bb24",
+                "currentID": "206"
+            },
+            {
+                "block": "306721e60a0000a91a38c036e26868cd",
+                "currentID": "208"
+            },
+            {
+                "block": "306722090a0000a91a38c036e7a255c8",
+                "currentID": "209"
+            },
+            {
+                "block": "306722540a0000a91a38c036a8dfd28c",
+                "currentID": "1015",
+                "parentID": "233"
+            },
+            {
+                "block": "306722310a0000a91a38c03609c2feb2",
+                "currentID": "1006",
+                "parentID": "1093"
+            },
+            {
+                "block": "306722ad0a0000a91a38c0360ed61b19"
+            },
+            {
+                "block": "306722d30a0000a91a38c03698ae2744",
+                "currentID": "1042",
+                "parentID": "223"
+            },
+            {
+                "block": "306722f60a0000a91a38c03684ffc2f3",
+                "currentID": "1016",
+                "parentID": "1093"
+            },
+            {
+                "block": "306722810a0000a91a38c036ea6dd23f",
+                "currentID": "1091"
+            },
+            {
+                "block": "306723520a0000a91a38c036e9200857",
+                "currentID": "2861"
+            },
+            {
+                "block": "306723240a0000a91a38c036296d705b",
+                "currentID": "990",
+                "parentID": "1093"
+            },
+            {
+                "block": "306724110a0000a91a38c036b956c5e2",
+                "currentID": "991",
+                "parentID": "1093"
+            },
+            {
+                "block": "306723de0a0000a91a38c03608f4f3be",
+                "currentID": "3095"
+            },
+            {
+                "block": "306723780a0000a91a38c036a57f6ed8",
+                "currentID": "211"
+            },
+            {
+                "block": "306724320a0000a91a38c03608aa5f5f",
+                "currentID": "213"
+            },
+            {
+                "block": "306724600a0000a91a38c036ad2fbd4c",
+                "currentID": "1000"
+            },
+            {
+                "block": "306723aa0a0000a91a38c0369561264e",
+                "currentID": "212"
+            },
+            {
+                "block": "3067248c0a0000a91a38c036a38fd0d8",
+                "currentID": "1027"
+            },
+            {
+                "block": "306724e10a0000a91a38c0361c84e7d2",
+                "currentID": "1017",
+                "parentID": "1093"
+            },
+            {
+                "block": "306725370a0000a91a38c03656ad620f",
+                "currentID": "214"
+            },
+            {
+                "block": "306725090a0000a91a38c03618399258",
+                "currentID": "1028",
+                "parentID": "1093"
+            },
+            {
+                "block": "3067255c0a0000a91a38c0368c8747c3",
+                "currentID": "1066"
+            },
+            {
+                "block": "306724ba0a0000a91a38c036432789ff",
+                "currentID": "982",
+                "parentID": "235"
+            },
+            {
+                "block": "306725880a0000a91a38c036ec3d78d2",
+                "currentID": "1070"
+            },
+            {
+                "block": "306726340a0000a91a38c03683a0afdd",
+                "currentID": "1023"
+            },
+            {
+                "block": "306726640a0000a91a38c036ffc3e38f",
+                "currentID": "1055",
+                "parentID": "218"
+            },
+            {
+                "block": "306725b80a0000a91a38c036f5e18265",
+                "currentID": "215"
+            },
+            {
+                "block": "306725e60a0000a91a38c03611ccb496",
+                "currentID": "992",
+                "parentID": "1093"
+            },
+            {
+                "block": "3067260d0a0000a91a38c03683ca6fd1",
+                "currentID": "2860",
+                "parentID": "240"
+            },
+            {
+                "block": "306726b80a0000a91a38c036ad2c7076",
+                "currentID": "1008",
+                "parentID": "240"
+            },
+            {
+                "block": "306726850a0000a91a38c036fbb9c316",
+                "currentID": "983",
+                "parentID": "2974"
+            },
+            {
+                "block": "306726ff0a0000a91a38c036db0bb6dc",
+                "currentID": "217"
+            },
+            {
+                "block": "306726e00a0000a91a38c036e5ed3aac",
+                "currentID": "216"
+            },
+            {
+                "block": "3067274f0a0000a91a38c036ebfd5b59",
+                "currentID": "1031",
+                "parentID": "211"
+            },
+            {
+                "block": "306727240a0000a91a38c0363ace062b",
+                "currentID": "218"
+            },
+            {
+                "block": "3067277a0a0000a91a38c03693006741",
+                "currentID": "219"
+            },
+            {
+                "block": "306727ce0a0000a91a38c0368e1a1409",
+                "currentID": "1032",
+                "parentID": "221"
+            },
+            {
+                "block": "306727a90a0000a91a38c036baade08d",
+                "currentID": "220"
+            },
+            {
+                "block": "306727fb0a0000a91a38c03612217795",
+                "currentID": "1034",
+                "parentID": "221"
+            },
+            {
+                "block": "306728240a0000a91a38c03650ab5e53",
+                "currentID": "1009",
+                "parentID": "240"
+            },
+            {
+                "block": "3067284e0a0000a91a38c036ba82e819",
+                "currentID": "223"
+            },
+            {
+                "block": "306728db0a0000a91a38c036edc58921",
+                "currentID": "1024",
+                "parentID": "1093"
+            },
+            {
+                "block": "3067287b0a0000a91a38c0367b004905",
+                "currentID": "996",
+                "parentID": "235"
+            },
+            {
+                "block": "306728b60a0000a91a38c0366c34bb18",
+                "currentID": "984",
+                "parentID": "235"
+            },
+            {
+                "block": "306729090a0000a91a38c0368c2a4d9d",
+                "currentID": "1044",
+                "parentID": "227"
+            },
+            {
+                "block": "306729300a0000a91a38c0368b2e8deb",
+                "currentID": "224"
+            },
+            {
+                "block": "3067295e0a0000a91a38c03610686dd5",
+                "currentID": "2974"
+            },
+            {
+                "block": "3067298a0a0000a91a38c0362b7ca89d",
+                "currentID": "225"
+            },
+            {
+                "block": "306729b90a0000a91a38c036f565153c",
+                "currentID": "226"
+            },
+            {
+                "block": "306729e80a0000a91a38c036ec82ced1",
+                "currentID": "1001"
+            },
+            {
+                "block": "30672a170a0000a91a38c036d767278b",
+                "currentID": "227"
+            },
+            {
+                "block": "30672a420a0000a91a38c0363c09b145",
+                "currentID": "228"
+            },
+            {
+                "block": "30672a730a0000a91a38c036be388dac",
+                "currentID": "1010",
+                "parentID": "240"
+            },
+            {
+                "block": "30672af00a0000a91a38c036b95e0eec",
+                "currentID": "1018",
+                "parentID": "1093"
+            },
+            {
+                "block": "30672a960a0000a91a38c0364942164d",
+                "currentID": "985",
+                "parentID": "235"
+            },
+            {
+                "block": "30672ac70a0000a91a38c0362b4a1be4",
+                "currentID": "1074",
+                "parentID": "1093"
+            },
+            {
+                "block": "30672b720a0000a91a38c036e51217aa",
+                "currentID": "230"
+            },
+            {
+                "block": "30672b3f0a0000a91a38c036c992588d",
+                "currentID": "229"
+            },
+            {
+                "block": "30672b1b0a0000a91a38c036270b13f8",
+                "currentID": "1060"
+            },
+            {
+                "block": "30672bf10a0000a91a38c03623ef2590",
+                "currentID": "232"
+            },
+            {
+                "block": "30672bc60a0000a91a38c036509e78c8",
+                "currentID": "1035",
+                "parentID": "211"
+            },
+            {
+                "block": "30672b9f0a0000a91a38c03668cbeb58",
+                "currentID": "231"
+            },
+            {
+                "block": "30672c7b0a0000a91a38c036409d9541",
+                "currentID": "235"
+            },
+            {
+                "block": "30672c250a0000a91a38c0369d329a40",
+                "currentID": "244"
+            },
+            {
+                "block": "30672c480a0000a91a38c036cf27dc10",
+                "currentID": "233"
+            },
+            {
+                "block": "30672cf30a0000a91a38c036bb8ce4f6",
+                "currentID": "1036"
+            },
+            {
+                "block": "30672d1a0a0000a91a38c036d2afdf96",
+                "currentID": "236"
+            },
+            {
+                "block": "30672ca20a0000a91a38c0365f40cc23",
+                "currentID": "234"
+            },
+            {
+                "block": "30672d690a0000a91a38c036b71a047d",
+                "currentID": "1037",
+                "parentID": "221"
+            },
+            {
+                "block": "30672d910a0000a91a38c036d3088e26",
+                "currentID": "1038",
+                "parentID": "211"
+            },
+            {
+                "block": "30672d430a0000a91a38c0367b5ef646"
+            },
+            {
+                "block": "30672dba0a0000a91a38c0367f3c03d7",
+                "currentID": "1002"
+            },
+            {
+                "block": "30672e6e0a0000a91a38c036d4982818",
+                "currentID": "1011",
+                "parentID": "240"
+            },
+            {
+                "block": "30672e160a0000a91a38c036b2782fc1",
+                "currentID": "1020",
+                "parentID": "1093"
+            },
+            {
+                "block": "30672dea0a0000a91a38c0362ca05ee3",
+                "currentID": "986",
+                "parentID": "235"
+            },
+            {
+                "block": "30672e950a0000a91a38c03673e6044d",
+                "currentID": "237"
+            },
+            {
+                "block": "30672e430a0000a91a38c036f0c96436",
+                "currentID": "1089",
+                "parentID": "235"
+            },
+            {
+                "block": "30672ef70a0000a91a38c0365a25a9c9",
+                "currentID": "1014"
+            },
+            {
+                "block": "30672ec00a0000a91a38c036e106faf4",
+                "currentID": "1040"
+            },
+            {
+                "block": "306735bb0a0000a91a38c0361e90e504",
+                "currentID": "1003"
+            },
+            {
+                "block": "3067355d0a0000a91a38c036ef70e39a",
+                "currentID": "1041"
+            },
+            {
+                "block": "306735420a0000a91a38c0362c6bb1d6",
+                "currentID": "988",
+                "parentID": "2974"
+            },
+            {
+                "block": "3067363b0a0000a91a38c0369aa65c20",
+                "currentID": "238"
+            },
+            {
+                "block": "306736eb0a0000a91a38c03619f15416",
+                "currentID": "1092"
+            },
+            {
+                "block": "306736650a0000a91a38c0366fae9c80",
+                "currentID": "239"
+            },
+            {
+                "block": "306736fb0a0000a91a38c03626c3024b"
+            },
+            {
+                "block": "306736620a0000a91a38c036ec29a965",
+                "currentID": "1005"
+            },
+            {
+                "block": "306737710a0000a91a38c036684e1f5c",
+                "currentID": "1061"
+            },
+            {
+                "block": "306737f20a0000a91a38c0362b168cda",
+                "currentID": "1004"
+            },
+            {
+                "block": "306738b50a0000a91a38c03606f0735a",
+                "currentID": "1047",
+                "parentID": "227"
+            },
+            {
+                "block": "3067387b0a0000a91a38c036f5350ee2",
+                "currentID": "241"
+            },
+            {
+                "block": "306739070a0000a91a38c03689e7408b",
+                "currentID": "993",
+                "parentID": "1093"
+            },
+            {
+                "block": "306738de0a0000a91a38c0360e3e6259",
+                "currentID": "1069"
+            },
+            {
+                "block": "306738480a0000a91a38c0364d045dd7",
+                "currentID": "1046",
+                "parentID": "227"
+            },
+            {
+                "block": "306739320a0000a91a38c03683d5feb6",
+                "currentID": "994",
+                "parentID": "1093"
+            },
+            {
+                "block": "3067395f0a0000a91a38c0367aaab5ad",
+                "currentID": "997",
+                "parentID": "208"
+            },
+            {
+                "block": "30673a080a0000a91a38c036a70f34ae",
+                "currentID": "1050",
+                "parentID": "224"
+            },
+            {
+                "block": "306739b20a0000a91a38c036ea5f2266",
+                "currentID": "242"
+            },
+            {
+                "block": "306739df0a0000a91a38c0367e4181a3",
+                "currentID": "1045",
+                "parentID": "233"
+            },
+            {
+                "block": "3067398b0a0000a91a38c036629700c9",
+                "currentID": "1022",
+                "parentID": "1093"
+            },
+            {
+                "block": "30673a2b0a0000a91a38c036988a549e",
+                "currentID": "995",
+                "parentID": "1093"
+            },
+            {
+                "block": "30673a600a0000a91a38c036f499e265",
+                "currentID": "1048",
+                "parentID": "227"
+            },
+            {
+                "block": "30673a850a0000a91a38c03696974f62"
+            },
+            {
+                "block": "30673ade0a0000a91a38c036b44a5c34",
+                "currentID": "1029",
+                "parentID": "207"
+            },
+            {
+                "block": "30673aad0a0000a91a38c036717a7eec",
+                "currentID": "1095",
+                "parentID": "227"
+            },
+            {
+                "block": "30673b0c0a0000a91a38c036f5cc6b00",
+                "currentID": "1039"
+            },
+            {
+                "block": "30673b320a0000a91a38c036ef8f1359",
+                "currentID": "243"
+            },
+            {
+                "block": "30673b6a0a0000a91a38c036df2ec0d5",
+                "currentID": "1013",
+                "parentID": "240"
+            },
+            {
+                "block": "30673ba70a0000a91a38c0369983c801",
+                "currentID": "1049",
+                "parentID": "233"
+            }
+        ];
+
+        buildings.forEach(function (parentBlock, i) {
+            if (parentBlock.parentID == undefined) {
+                console.log(parentBlock);
+            }
+            buildings.forEach(function (childBlock, i) {
+                if (childBlock.parentID != undefined && childBlock.parentID == parentBlock.currentID) {
+                    console.log(childBlock);
+                    readAsset({
+                        type: "block",
+                        id: childBlock.block,
+                    }).then(function (result) {
+                        // console.log(result);
+                        result.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[0].structuredDataNodes[25].blockId = parentBlock.block;
+                        editAsset({
+                            asset: result.apiReturn,
+                        }).then(function (result) {
+                            console.log(result);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+            console.log("---");
+        });
+
+    </script>
+</body>
+
+</html>

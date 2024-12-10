@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        // const cmsUrl = "https://cascade.sdsc.edu/";
+        // const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        listSubscribers({
+            type: "contenttype",
+            id: "8fe1907e84f914e460cebb3a5e307ced",
+        }).then(function (result) {
+            var pages = result.apiReturn.subscribers;
+            console.log(pages);
+            pages.forEach(function (page, i) {
+                setTimeout(function () { // FOR DELAY
+                    // if (i < 30) { // FOR TESTING
+                    // if (page.path.path.includes("news/_migrate") && !page.path.path.includes("_migrated")) {
+                    readAsset({
+                        type: "page",
+                        id: page.id,
+                    }).then(function (result) {
+                        console.log(result);
+                        // SYNDICATION CATEGORY 
+                        var sCats = [];
+                        var oldCatsAr = [];
+                        var oldCats = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[15].text;
+                        if (oldCats != "::CONTENT-XML-SELECTOR::") {
+                            oldCatsAr = oldCats.split("::CONTENT-XML-SELECTOR::");
+                            oldCatsAr = oldCatsAr.filter(n => n);
+                            // console.log(oldCatsAr);
+                            if (oldCatsAr.length > 0) {
+                                oldCatsAr.forEach(function (c, i) {
+                                    sCats.push({ "value": c })
+                                });
+                            }
+                            // console.log(sCats);
+                            result.apiReturn.asset.page.metadata.dynamicFields[1].fieldValues = sCats;
+                        }
+                        // NEWS CATEGORY 
+                        var nCats = []
+                        if (oldCatsAr.length > 0) {
+                            oldCatsAr.forEach(function (c, i) {
+                                if (c == "HPC Training") {
+                                    nCats.push({ "value": "Education" });
+                                } else if (c == "Research Data Services") {
+                                    nCats.push({ "value": "Technology" });
+                                }
+                            });
+                            if (nCats.length > 0) {
+                                result.apiReturn.asset.page.metadata.dynamicFields[0].fieldValues = nCats;
+                            }
+                        }
+                        // DATE
+                        var oldDate = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[1].text;
+                        if (oldDate != "undefined" && oldDate != "" && oldDate != null) {
+                            result.apiReturn.asset.page.metadata.startDate = dateToDateTime(oldDate);
+                        }
+                        // TITLE
+                        result.apiReturn.asset.page.metadata.displayName = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[0].text;
+                        result.apiReturn.asset.page.metadata.title = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[0].text;
+                        // SUMMARY/DESCRIPTION
+                        var summary = "";
+                        var teaser = "";
+                        summary = result.apiReturn.asset.page.metadata.summary;
+                        teaser = result.apiReturn.asset.page.metadata.teaser;
+                        if (summary != "undefined" && summary != "" && summary != null) {
+                            result.apiReturn.asset.page.metadata.metaDescription = summary;
+                            result.apiReturn.asset.page.metadata.summary = "";
+                        }
+                        if (teaser != "undefined" && teaser != "" && teaser != null) {
+                            result.apiReturn.asset.page.metadata.metaDescription = teaser;
+                            result.apiReturn.asset.page.metadata.teaser = "";
+                        }
+                        // SUBHEADLINE
+                        var subheadline = "";
+                        result.apiReturn.asset.page.structuredData.structuredDataNodes[3].text = "";
+                        subheadline = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[2].text;
+                        if (subheadline != "undefined" && subheadline != "" && subheadline != null) {
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[3].text = subheadline;
+                        }
+                        // IMAGE
+                        var imageOLD = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[3].fileId;
+                        var bannerOLD = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[9].fileId;
+                        result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[2].text = "No";
+                        if (imageOLD != "undefined" && imageOLD != "" && imageOLD != null) {
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[2].text = "Yes";
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[0].fileId = imageOLD;
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[1].text = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].text;
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[3].text = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].text;
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[4].text = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[6].text;
+                        }
+                        if (bannerOLD != "undefined" && bannerOLD != "" && bannerOLD != null) {
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[0].fileId = bannerOLD;
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[1].text = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[10].text;
+                            if (imageOLD == "undefined" || imageOLD == "" || imageOLD == null) {
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[2].text = "No";
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[0].fileId = "";
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[0].filePath = "";
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[2].structuredDataNodes[1].text = "";
+                            }
+                        }
+                        // WYSIWYG
+                        var WYSIWYG = "";
+                        WYSIWYG = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[12].text;
+                        if (WYSIWYG != "undefined" && WYSIWYG != "" && WYSIWYG != null) {
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[4].structuredDataNodes[0].text = "WYSIWYG";
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes[4].structuredDataNodes[2].text = WYSIWYG;
+                            // AUTHOR
+                            var author = "";
+                            author = WYSIWYG.match(/<p><em>By .*?<\/em><\/p>/g);
+                            if (author != "undefined" && author != "" && author != null) {
+                                WYSIWYG = WYSIWYG.replace(author, "");
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[4].structuredDataNodes[2].text = WYSIWYG;
+                                author = author.toString().replace("<p><em>By ", "").replace("</em></p>", "");
+                                result.apiReturn.asset.page.metadata.author = author;
+                            }
+                            var author2 = "";
+                            author2 = WYSIWYG.match(/<p><em>By: .*?<\/em><\/p>/g);
+                            if (author2 != "undefined" && author2 != "" && author2 != null) {
+                                WYSIWYG = WYSIWYG.replace(author2, "");
+                                result.apiReturn.asset.page.structuredData.structuredDataNodes[4].structuredDataNodes[2].text = WYSIWYG;
+                                author2 = author2.toString().replace("<p><em>By: ", "").replace("</em></p>", "");
+                                result.apiReturn.asset.page.metadata.author = author2;
+                            }
+                        }
+
+
+                        // SIDEBAR
+                        result.apiReturn.asset.page.structuredData.structuredDataNodes.splice(5, 12);
+                        var sb1 = {
+                            "type": "group",
+                            "identifier": "sidebar-widget",
+                            "structuredDataNodes": [
+                                {
+                                    "type": "text",
+                                    "identifier": "type",
+                                    "text": "Categories",
+                                    "recycled": false
+                                }]
+                        };
+                        result.apiReturn.asset.page.structuredData.structuredDataNodes.push(sb1);
+                        var sb2 = {
+                            "type": "group",
+                            "identifier": "sidebar-widget",
+                            "structuredDataNodes": [
+                                {
+                                    "type": "text",
+                                    "identifier": "type",
+                                    "text": "Archive",
+                                    "recycled": false
+                                }]
+                        };
+                        result.apiReturn.asset.page.structuredData.structuredDataNodes.push(sb2);
+                        var mediacontact = "";
+                        mediacontact = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[13].text;
+                        if (mediacontact != "undefined" && mediacontact != "" && mediacontact != null) {
+                            var sb3 = {
+                                "type": "group",
+                                "identifier": "sidebar-widget",
+                                "structuredDataNodes": [
+                                    {
+                                        "type": "text",
+                                        "identifier": "type",
+                                        "text": "Media Contact",
+                                        "recycled": false
+                                    },
+                                    {
+                                        "type": "text",
+                                        "identifier": "wysiwyg",
+                                        "text": mediacontact,
+                                        "recycled": false
+                                    }]
+                            };
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes.push(sb3);
+                        }
+                        var rlinks = "";
+                        rlinks = result.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[14].text;
+                        if (rlinks != "undefined" && rlinks != "" && rlinks != null) {
+                            var sb4 = {
+                                "type": "group",
+                                "identifier": "sidebar-widget",
+                                "structuredDataNodes": [
+                                    {
+                                        "type": "text",
+                                        "identifier": "type",
+                                        "text": "Related Links",
+                                        "recycled": false
+                                    },
+                                    {
+                                        "type": "text",
+                                        "identifier": "wysiwyg",
+                                        "text": rlinks,
+                                        "recycled": false
+                                    }]
+                            };
+                            result.apiReturn.asset.page.structuredData.structuredDataNodes.push(sb4);
+                        }
+                        editAsset({
+                            asset: result.apiReturn,
+                        }).then(function (result) {
+                            console.log(result);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    // }
+                    // }
+                }, i * 500);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

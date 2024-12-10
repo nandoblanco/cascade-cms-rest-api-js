@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        // const cmsUrl = "https://cascade.sdsc.edu/";
+        // const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var redirects = [];
+        listSubscribers({
+            type: "contenttype",
+            // id: "8fe1907e84f914e460cebb3a5e307ced", // news
+            // id: "c31dd1c484f914e460cebb3afe003774", // events
+            // id: "c3d5494584f914e460cebb3a27f1b73a", // experts
+        }).then(function (result) {
+            var pages = result.apiReturn.subscribers;
+            console.log(pages);
+            pages.forEach(function (page, i) {
+                // console.log(page.path.path);
+                var p = page.path.path.lastIndexOf('/');
+                var result = page.path.path.substring(p + 1);
+                // console.log(result);
+                // redirects.push("https://sdsc.edu/News%20Items/" + result + ".html:::https://sdsc.edu/" + page.path.path + ".html"); // news
+                redirects.push("https://www.sdsc.edu/event_items/" + result + ".html:::https://sdsc.edu/" + page.path.path + ".html"); // events
+                // redirects.push("https://www.sdsc.edu/research/researcher_spotlight/" + result + ".html:::https://www.sdsc.edu/" + page.path.path + ".html"); // experts
+            });
+            console.log(redirects);
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

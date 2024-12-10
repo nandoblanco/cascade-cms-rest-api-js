@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://cascade.sdsc.edu/";
+        const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        listSubscribers({
+            type: "contenttype",
+            id: "8fe1907e84f914e460cebb3a5e307ced",
+        }).then(function (result) {
+            var pages = result.apiReturn.subscribers;
+            console.log(pages);
+            pages.forEach(function (page, i) {
+                setTimeout(function () { // FOR DELAY
+                    // if (i < 30) { // FOR TESTING
+                    if (page.path.path.includes("news/_migrated")) {
+                        readAsset({
+                            type: "page",
+                            id: page.id,
+                        }).then(function (result) {
+                            console.log(result);
+                            var pFolder = result.apiReturn.asset.page.metadata.startDate.slice(0, 4);
+                            var pID = result.apiReturn.asset.page.id;
+                            moveAsset({
+                                type: "page",
+                                id: pID,
+                                moveParameters: {
+                                    destinationContainerIdentifier: {
+                                        type: "folder",
+                                        path: {
+                                            path: "news/" + pFolder,
+                                            siteName: "sdsc_stage_2024"
+                                        }
+                                    }
+                                }
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    } else {
+                        console.log(page);
+                    }
+                    // }
+                }, i * 300);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

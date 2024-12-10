@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        // const cmsUrl = "https://cookman.cascadecms.com/";
+        // const cmsAPI = "";
+        // const siteName = "Cookman Main";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        // updateNewTemplate("HTMLv2");
+        // updateNewTemplate("Specialv2");
+
+        // updateConfig("Home");
+
+        var excludedConfigs = ["Special Site", "Home", "Includes", "Sitemap", "Data File"];
+
+        // updateConfigs("ea78a161ac1e034a33fc3953b60211ec", excludedConfigs);
+
+        function updateConfigs(configContainerId, exclude) {
+            readAsset({
+                type: "pageconfigurationsetcontainer",
+                id: configContainerId,
+            }).then(function (result) {
+                console.log(result);
+                result.apiReturn.asset.pageConfigurationSetContainer.children.forEach(function (c, i) {
+                    if (c.type == "pageconfigurationset" && !excludedConfigs.includes(c.path.path)) {
+                        console.log(c);
+                        updateConfig(c.path.path);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function updateConfig(config) {
+            readAsset({
+                type: "pageconfigurationset",
+                path: config,
+                siteName: siteName
+            }).then(function (result) {
+                // console.log(result);
+                var pC = {};
+                // var pCR = [];
+                result.apiReturn.asset.pageConfigurationSet.pageConfigurations.forEach(function (cPC, i) {
+                    if (cPC.name == "HTML") {
+                        pC = { ...cPC };
+                    }
+                });
+                delete pC.id;
+                delete pC.templateId;
+                pC.name = "HTML v2";
+                pC.defaultConfiguration = false;
+                pC.publishable = false;
+                pC.templatePath = "_cms/templates/HTMLv2";
+                pC.pageRegions.forEach(function (cPCR, i) {
+                    var newFormat = v(cPCR.formatPath);
+                    // newFormat = newFormat.replace("formats/", "formats-v2/");
+                    // newFormat = newFormat.replace("_news/formats/", "formats-v2/news/");
+                    newFormat = newFormat.replace("_directory/formats/", "formats-v2/directory/");
+                    delete pC.pageRegions[i].formatId;
+                    pC.pageRegions[i].formatPath = newFormat;
+                });
+                result.apiReturn.asset.pageConfigurationSet.pageConfigurations.push(pC);
+                editAsset({
+                    asset: result.apiReturn,
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function updateNewTemplate(template) {
+            readAsset({
+                type: "template",
+                path: "_cms/templates/" + template,
+                siteName: siteName
+            }).then(function (result) {
+                console.log(result);
+                result.apiReturn.asset.template.pageRegions.forEach(function (pR, i) {
+                    var newFormat = v(pR.formatPath);
+                    newFormat = newFormat.replace("formats/", "formats-v2/");
+                    delete pR.formatId;
+                    pR.formatPath = newFormat;
+                });
+                editAsset({
+                    asset: result.apiReturn,
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+    </script>
+</body>
+
+</html>

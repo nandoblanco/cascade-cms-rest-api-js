@@ -7,14 +7,12 @@
 <body>
     <script>
         const cmsUrl = "https://midmich-admin.cascadecms.com/";
-        const cmsAPI = "3cb0dc2d-7478-4d2f-9730-9d3c43c386d6";
+        const cmsAPI = "";
     </script>
     <script src="../cascade-restapi.js"></script>
     <script>
 
         var ctID = "8a0d45270a0000ec49c4cdb77bb4f4a1";
-
-
 
         // readAsset({
         //     type: "page",
@@ -52,7 +50,7 @@
                                 type: "page",
                                 id: page.id,
                             }).then(function (result) {
-                                console.log(result);
+                                // console.log(result);
                                 var mdValue = result.apiReturn.asset.page.metadata.reviewDate;
                                 if (mdValue != undefined) {
                                     delete result.apiReturn.asset.page.metadata.reviewDate;
@@ -63,6 +61,7 @@
                                         console.log("-----");
                                     }).catch(function (error) {
                                         console.log(error);
+                                        console.log("-----");
                                     });
                                 } else {
                                     console.log("-----");
@@ -72,7 +71,7 @@
                             });
                         }
                         // }
-                    }, i * 200);
+                    }, i * 400);
                 });
             }).catch(function (error) {
                 console.log(error);

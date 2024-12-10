@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://cascade.sdsc.edu/";
+        const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var redirects = [];
+        listSubscribers({
+            type: "contenttype",
+            id: "c31dd1c484f914e460cebb3afe003774",
+        }).then(function (result) {
+            var pages = result.apiReturn.subscribers;
+            pages.forEach(function (page, i) {
+                setTimeout(function () { // FOR DELAY
+                    readAsset({
+                        type: "page",
+                        id: page.id,
+                    }).then(function (result) {
+                        console.log(result);
+                        var newCats = [];
+                        var oldCatsAr = [];
+                        var oldCats = result.apiReturn.asset.page.structuredData.structuredDataNodes[10].text;
+                        if (oldCats != "::CONTENT-XML-SELECTOR::") {
+                            oldCatsAr = oldCats.split("::CONTENT-XML-SELECTOR::");
+                            oldCatsAr = oldCatsAr.filter(n => n);
+                            if (oldCatsAr.length > 0) {
+                                oldCatsAr.forEach(function (c, i) {
+                                    newCats.push({ "value": c })
+                                });
+                            }
+                            result.apiReturn.asset.page.metadata.dynamicFields[1].fieldValues = newCats;
+                            editAsset({
+                                asset: result.apiReturn,
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }, i * 300);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

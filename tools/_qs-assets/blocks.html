@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var blocks = ["Banner CTA", "News Events", "Experts", "Support Services", "Parallax CTA", "Accordion", "Quote", "People Groups", "Support Cards"];
+
+        function createBlock() {
+            for (let i = 0; i < blocks.length; i++) {
+                copyAsset({
+                    path: "_cms/base-assets/blocks/" + camelCase(blocks[i]),
+                    type: "block",
+                    siteName: cmsSite,
+                    copyParameters: {
+                        newName: camelCase(blocks[i]),
+                        destinationContainerIdentifier: {
+                            type: "folder",
+                            path: {
+                                path: "_demo/_blocks",
+                                siteName: cmsSite,
+                            },
+                        },
+                        doWorkflow: false
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function updateBlockDD() {
+            for (let i = 0; i < blocks.length; i++) {
+                readAsset({
+                    type: "block",
+                    siteName: cmsSite,
+                    path: "_cms/base-assets/blocks/" + camelCase(blocks[i])
+                }).then(function (result) {
+                    delete result.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.definitionId;
+                    result.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.definitionPath = "Blocks/" + blocks[i];
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function copyBlockFormat() {
+            for (let i = 0; i < blocks.length; i++) {
+                copyAsset({
+                    type: "format",
+                    siteName: cmsSite,
+                    path: "_cms/formats/blocks/wysiwyg",
+                    copyParameters: {
+                        newName: camelCase(blocks[i]),
+                        destinationContainerIdentifier: {
+                            type: "folder",
+                            path: {
+                                path: "_cms/formats/blocks",
+                                siteName: cmsSite
+                            },
+                        },
+                        doWorkflow: false
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function updateBlockAF() {
+            for (let i = 0; i < blocks.length; i++) {
+                readAsset({
+                    path: "Blocks/" + blocks[i],
+                    type: "assetfactory",
+                    siteName: cmsSite,
+                }).then(function (result) {
+                    // console.log(result);
+                    delete result.apiReturn.asset.assetFactory.baseAssetId;
+                    result.apiReturn.asset.assetFactory.baseAssetPath = "_cms/base-assets/blocks/" + camelCase(blocks[i]);
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function updateBlockBA() {
+            for (let i = 0; i < blocks.length; i++) {
+                readAsset({
+                    type: "block",
+                    siteName: cmsSite,
+                    path: "_cms/base-assets/blocks/" + camelCase(blocks[i])
+                }).then(function (result) {
+                    delete result.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.definitionId;
+                    result.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.definitionPath = "Blocks/" + blocks[i];
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function copyBlockAF() {
+            for (let i = 0; i < blocks.length; i++) {
+                copyAsset({
+                    path: "Blocks/WYSIWYG",
+                    type: "assetfactory",
+                    siteName: cmsSite,
+                    copyParameters: {
+                        newName: blocks[i],
+                        destinationContainerIdentifier: {
+                            type: "assetfactorycontainer",
+                            path: {
+                                path: "Blocks",
+                                siteName: cmsSite,
+                            },
+                        },
+                        doWorkflow: false
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function copyBlockBA() {
+            for (let i = 0; i < blocks.length; i++) {
+                copyAsset({
+                    path: "_cms/base-assets/blocks/wysiwyg",
+                    type: "block",
+                    siteName: cmsSite,
+                    copyParameters: {
+                        newName: camelCase(blocks[i]),
+                        destinationContainerIdentifier: {
+                            type: "folder",
+                            path: {
+                                path: "_cms/base-assets/blocks",
+                                siteName: cmsSite,
+                            },
+                        },
+                        doWorkflow: false
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function copyBlockDD() {
+            for (let i = 0; i < blocks.length; i++) {
+                copyAsset({
+                    path: "Blocks/WYSIWYG",
+                    type: "structureddatadefinition",
+                    siteName: cmsSite,
+                    copyParameters: {
+                        newName: blocks[i],
+                        destinationContainerIdentifier: {
+                            type: "structureddatadefinitioncontainer",
+                            path: {
+                                path: "Blocks",
+                                siteName: cmsSite,
+                            },
+                        },
+                        doWorkflow: false
+                    }
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        var functions = [copyBlockDD, copyBlockBA, copyBlockAF, updateBlockBA, updateBlockAF, copyBlockFormat, updateBlockDD, createBlock];
+
+        function run() {
+            for (let i = 0; i < functions.length; i++) {
+                setTimeout(() => {
+                    functions[i]();
+                }, 3000 * i);
+            }
+        }
+
+        // functions[3]();
+        run();
+
+    </script>
+</body>
+
+</html>

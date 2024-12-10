@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://wcms.northwestern.edu/";
+        const cmsAPI = "";
+        const newSite = "Qatar-HOME-v4";
+        // const oldCTv1 = "85763216816977246725de36f87d8680"; // 2018 v1
+        const newCTv1 = "95e4868d81697778253d2f45cce7f07b"; // 2018 v1 (2024 copy)
+        // const oldCTv2 = "b02472a4816977247845ea4cd6888c2c";  // 2018 v2
+        const newCTv2 = "96c9279281697778253d2f453ab79768"; // 2018 v2 (2024 copy)
+
+
+    </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify.min.js"></script> -->
+    <!-- <script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        var headline, subHeadline;
+
+        // migrateContent(newCTv1, 1);
+
+        migrateContent(newCTv2, 2);
+
+        function migrateV2(result) {
+            console.log(result);
+            var pData = result.apiReturn;
+            // display name ############################################
+            if (pData.asset.page.metadata.displayName.toLowerCase().includes("article")) {
+                pData.asset.page.metadata.displayName = pData.asset.page.metadata.title;
+            }
+            // summary ############################################
+            pData.asset.page.metadata.metaDescription = pData.asset.page.metadata.summary;
+            pData.asset.page.metadata.summary = "";
+            // thumbnail ############################################
+            var old = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[1].structuredDataNodes[0].filePath);
+            var oldID = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[1].structuredDataNodes[0].fileId);
+            var oldText = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[1].structuredDataNodes[1].text);
+            if (old != "" && !old.includes("slashes-purple.jpg")) {
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[0].text = "Custom";
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[1].structuredDataNodes[0].fileId = oldID;
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[1].structuredDataNodes[1].text = oldText;
+            }
+            // hero/header ############################################
+            var oldHeroImg = "";
+            var oldHeroImgPath = "";
+            var oldHeroImgText = "";
+            var old = pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[2];
+            if (old.structuredDataNodes[0].text == "Simple Header") {
+                pData.asset.page.metadata.dynamicFields[0].fieldValues[0].value = v(old.structuredDataNodes[1].structuredDataNodes[1].text);
+                pData.asset.page.metadata.dynamicFields[1].fieldValues[0].value = v(old.structuredDataNodes[1].structuredDataNodes[2].text);
+            } else if (old.structuredDataNodes[0].text == "Hero (Banner)") {
+                pData.asset.page.metadata.dynamicFields[0].fieldValues[0].value = v(old.structuredDataNodes[2].structuredDataNodes[2].text);
+                pData.asset.page.metadata.dynamicFields[1].fieldValues[0].value = v(old.structuredDataNodes[2].structuredDataNodes[4].text);
+                oldHeroImg = v(old.structuredDataNodes[2].structuredDataNodes[5].structuredDataNodes[1].structuredDataNodes[0].fileId);
+                oldHeroImgPath = v(old.structuredDataNodes[2].structuredDataNodes[5].structuredDataNodes[1].structuredDataNodes[0].filePath);
+            }
+            // save/clone original row node ############################################
+            var row = pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[5];
+            console.log(row);
+            // remove rows & arabic nodes ############################################
+            pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.splice(5, 20);
+            // migrate old hero to first new row  ############################################
+            if (oldHeroImg != "" && !oldHeroImgPath.includes("slashes-purple.jpg")) {
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(imageRow(oldHeroImg, oldHeroImgText))
+            }
+            pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes.forEach(function (sDN, sDNi) {
+                if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Text") {
+                    var wText = w(sDN.structuredDataNodes[1].text);
+                    pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(wysiwygRow(wText))
+                } else if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Image or Gallery") {
+                    if (sDN.structuredDataNodes[3].structuredDataNodes.length == 2) {
+                        var oldImg = v(sDN.structuredDataNodes[3].structuredDataNodes[1].structuredDataNodes[0].fileId);
+                        var oldImgText = v(sDN.structuredDataNodes[3].structuredDataNodes[1].structuredDataNodes[1].text);
+                        if (oldImg != "" && oldImg != oldHeroImg) {
+                            pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(imageRow(oldImg, oldImgText))
+                        }
+                    } else if (sDN.structuredDataNodes[3].structuredDataNodes.length > 2) {
+                        var galleryImages = [];
+                        sDN.structuredDataNodes[3].structuredDataNodes.forEach(function (sDN2, sDNi2) {
+                            if (sDN2.identifier == "image") {
+                                galleryImages.push(galleryImage(v(sDN2.structuredDataNodes[0].fileId), v(sDN2.structuredDataNodes[1].text)));
+                            }
+                        });
+                        pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(galleryRow(galleryImages));
+                    }
+                } else if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Quote") {
+                    var q1 = v(sDN.structuredDataNodes[2].structuredDataNodes[0].text);
+                    var q2 = v(sDN.structuredDataNodes[2].structuredDataNodes[1].text);
+                    var quote = "<blockquote><p>" + q1 + "</p><p>" + q2 + "</p></blockquote>";
+                    pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(wysiwygRow(quote))
+                }
+            });
+            editAsset({
+                asset: pData,
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function migrateV1(result) {
+            console.log(result);
+            var pData = result.apiReturn;
+            // display name ############################################
+            if (pData.asset.page.metadata.displayName.toLowerCase().includes("article")) {
+                pData.asset.page.metadata.displayName = pData.asset.page.metadata.title;
+            }
+            // summary ############################################
+            pData.asset.page.metadata.metaDescription = pData.asset.page.metadata.summary;
+            pData.asset.page.metadata.summary = "";
+            // hero ############################################
+            var oldHeroImg = "";
+            var oldHeroImgPath = "";
+            var oldHeroImgText = "";
+            var old = pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[1].structuredDataNodes;
+            if (old[0].identifier == "display" && old[0].text == "Show" && !old[4].filePath.includes("slashes-purple.jpg")) {
+                oldHeroImg = v(old[4].fileId);
+                oldHeroImgPath = v(old[4].filePath);
+                oldHeroImgText = v(old[5].text);
+                pData.asset.page.metadata.dynamicFields[0].fieldValues[0].value = v(old[2].text);
+                pData.asset.page.metadata.dynamicFields[1].fieldValues[0].value = v(old[3].text);
+            }
+            // simple-header ############################################
+            var old = pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[0].structuredDataNodes;
+            if (old[0].identifier == "display" && old[0].text == "Show") {
+                pData.asset.page.metadata.dynamicFields[0].fieldValues[0].value = v(old[2].text);
+                pData.asset.page.metadata.dynamicFields[1].fieldValues[0].value = v(old[3].text);
+            }
+            // thumbnail ############################################
+            var old = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[2].structuredDataNodes[0].filePath);
+            var oldID = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[2].structuredDataNodes[0].fileId);
+            var oldText = v(pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes[2].structuredDataNodes[1].text);
+            if (old != "" && !old.includes("slashes-purple.jpg")) {
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[0].text = "Custom";
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[1].structuredDataNodes[0].fileId = oldID;
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].structuredDataNodes[1].structuredDataNodes[1].text = oldText;
+            }
+            // save/clone original row node ############################################
+            var row = pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[5];
+            // console.log(row);
+            // remove rows & arabic nodes ############################################
+            pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.splice(5, 20);
+            // migrate old hero to first new row  ############################################
+            if (oldHeroImg != "" && !oldHeroImgPath.includes("slashes-purple.jpg")) {
+                pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(imageRow(oldHeroImg, oldHeroImgText))
+            }
+            // loop over old rows for new rows  ############################################
+            pData.asset.page.structuredData.structuredDataNodes[1].structuredDataNodes.forEach(function (sDN, sDNi) {
+                if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Text") {
+                    var wText = w(sDN.structuredDataNodes[1].text);
+                    pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(wysiwygRow(wText))
+                } else if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Image or Gallery") {
+                    if (sDN.structuredDataNodes[3].structuredDataNodes.length == 2) {
+                        var oldImg = v(sDN.structuredDataNodes[3].structuredDataNodes[1].structuredDataNodes[0].fileId);
+                        var oldImgText = v(sDN.structuredDataNodes[3].structuredDataNodes[1].structuredDataNodes[1].text);
+                        if (oldImg != "" && oldImg != oldHeroImg) {
+                            pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(imageRow(oldImg, oldImgText))
+                        }
+                    } else if (sDN.structuredDataNodes[3].structuredDataNodes.length > 2) {
+                        var galleryImages = [];
+                        sDN.structuredDataNodes[3].structuredDataNodes.forEach(function (sDN2, sDNi2) {
+                            if (sDN2.identifier == "image") {
+                                galleryImages.push(galleryImage(v(sDN2.structuredDataNodes[0].fileId), v(sDN2.structuredDataNodes[1].text)));
+                            }
+                        });
+                        pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(galleryRow(galleryImages));
+                    }
+                } else if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text == "Quote") {
+                    var q1 = v(sDN.structuredDataNodes[2].structuredDataNodes[0].text);
+                    var q2 = v(sDN.structuredDataNodes[2].structuredDataNodes[1].text);
+                    var quote = "<blockquote><p>" + q1 + "</p><p>" + q2 + "</p></blockquote>";
+                    pData.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes.push(wysiwygRow(quote))
+                } else if (sDN.identifier == "article" && sDN.structuredDataNodes[0].text != "Image or Gallery" && sDN.structuredDataNodes[0].text != "Text" && sDN.structuredDataNodes[0].text != "Quote") {
+                    console.log(sDN);
+                }
+            });
+            editAsset({
+                asset: pData,
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function migrateContent(CT, V) {
+            listSubscribers({
+                type: "contenttype",
+                id: CT,
+            }).then(function (result) {
+                console.log(result);
+                var pages = result.apiReturn.subscribers;
+                pages.forEach(function (page, i) {
+                    // if (i < 10) {
+                    if (page.type == "page" && page.path.siteName == newSite) {
+                        readAsset({
+                            type: "page",
+                            id: page.id,
+                        }).then(function (result) {
+                            if (V == 1) {
+                                migrateV1(result);
+                            } else if (V == 2) {
+                                migrateV2(result);
+                            }
+                            console.log("------");
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                    // }
+                });
+            });
+        }
+
+        function galleryImage(img, alt) {
+            return {
+                "type": "group",
+                "identifier": "slide",
+                "structuredDataNodes": [{
+                    "type": "asset",
+                    "identifier": "file",
+                    "assetType": "file",
+                    "fileId": img
+                }, {
+                    "type": "text",
+                    "identifier": "alt",
+                    "text": alt
+                }]
+            }
+        }
+
+        function galleryRow(galleryImages) {
+            return {
+                "type": "group",
+                "identifier": "row",
+                "structuredDataNodes": [{
+                    "type": "text",
+                    "identifier": "type",
+                    "text": "Gallery Slider"
+                }, {
+                    "type": "group",
+                    "identifier": "gallery",
+                    "structuredDataNodes": galleryImages
+                }]
+            }
+        }
+
+        function imageRow(img, alt) {
+            return {
+                "type": "group",
+                "identifier": "row",
+                "structuredDataNodes": [{
+                    "type": "text",
+                    "identifier": "type",
+                    "text": "Image"
+                }, {
+                    "type": "group",
+                    "identifier": "image",
+                    "structuredDataNodes": [{
+                        "type": "asset",
+                        "identifier": "file",
+                        "assetType": "file",
+                        "fileId": img
+                    }, {
+                        "type": "text",
+                        "identifier": "alt",
+                        "text": alt
+                    }]
+                }]
+            }
+        }
+
+        function wysiwygRow(text) {
+            return {
+                "type": "group",
+                "identifier": "row",
+                "structuredDataNodes": [{
+                    "type": "text",
+                    "identifier": "type",
+                    "text": "WYSIWYG"
+                }, {
+                    "type": "group",
+                    "identifier": "wysiwyg",
+                    "structuredDataNodes": [{
+                        "type": "text",
+                        "identifier": "content",
+                        "text": text
+                    }]
+                }]
+            }
+        }
+
+        // findNonArticles("news");
+
+        function findNonArticles(path) {
+            readAsset({
+                type: "folder",
+                path: "news",
+                siteName: newSite
+            }).then(function (result) {
+                console.log(result);
+                result.apiReturn.asset.folder.children.forEach(function (child, i) {
+                    if (child.type == "page") {
+                        console.log(child);
+                    } else if (child.type == "folder") {
+                        // findNonArticles(child.path.path);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        // update old ct to copied ct to update dd
+        // dd update: move old fields to group and then add fields from new dd
+        // migrate content from old dd fields to new dd fields
+        // updateCT(oldCTv2, newCTv2);
+        // updateCT(oldCTv1, newCTv1);
+
+        function updateCT(oldCT, newCT) {
+            listSubscribers({
+                type: "contenttype",
+                id: oldCT,
+            }).then(function (result) {
+                console.log(result);
+                var pages = result.apiReturn.subscribers;
+                pages.forEach(function (page, i) {
+                    // setTimeout(function () {
+                    // if (i < 200) {
+                    if (page.type == "page" && page.path.siteName == newSite) {
+                        readAsset({
+                            type: "page",
+                            id: page.id,
+                        }).then(function (result) {
+                            console.log(result);
+                            delete result.apiReturn.asset.page.pageConfigurations;
+                            delete result.apiReturn.asset.page.contentTypePath;
+                            result.apiReturn.asset.page.contentTypeId = newCT;
+                            editAsset({
+                                asset: result.apiReturn,
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                    // }
+                    // }, i * 400);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

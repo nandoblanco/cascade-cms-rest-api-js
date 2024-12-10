@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "";
+        const cmsAPI = "";
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../cascade-restapi.js"></script>
+    <script>
+        listSubscribers({
+            type: "contenttype",
+            id: "70784fe20a0000ec49c4cdb71d089f8c",
+        }).then(function (result) {
+            // console.log(result);
+            var pages = result.apiReturn.subscribers;
+            pages.forEach(function (page, i) {
+                // setTimeout(function () {
+                // if (i < 1) {
+                readAsset({
+                    type: "page",
+                    id: page.id,
+                }).then(function (result) {
+                    console.log(result);
+                    result.apiReturn.asset.page.structuredData.structuredDataNodes[7].structuredDataNodes[5].text = "::CONTENT-XML-SELECTOR::" + result.apiReturn.asset.page.structuredData.structuredDataNodes[7].structuredDataNodes[1].text;
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                // }
+                // }, i * 200);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+    </script>
+</body>
+
+</html>

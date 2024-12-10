@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://messiah.cascadecms.com/";
+        const cmsAPI = "";
+        const ddID = "d4415a1f0a0000a914f2c7c0b82a00f4";
+        const site = "_global_cascade_assets";
+
+
+    </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify.min.js"></script> -->
+    <!-- <script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script> -->
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        listSubscribers({
+            type: "structureddatadefinition",
+            id: ddID, // fill in
+        }).then(function (result) {
+            // console.log(result);
+            // console.log(result.apiReturn.subscribers);
+            result.apiReturn.subscribers.forEach(function (block, i) {
+                // if (i < 2) {
+                var imgID = "";
+                readAsset({
+                    type: "block",
+                    id: block.id,
+                }).then(function (result) {
+                    var blockResult = result;
+                    // console.log(blockResult);
+                    var img = blockResult.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[0].structuredDataNodes[13].text;
+                    // console.log(img);
+                    if (img != undefined && img != "/campus-locations/campus-map/") {
+                        readAsset({
+                            type: "file",
+                            path: img.substring(1),
+                            siteName: site
+                        }).then(function (result) {
+                            // console.log(result);
+                            imgID = result.apiReturn.asset.file.id;
+                            blockResult.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[0].structuredDataNodes[12].fileId = imgID;
+                            editAsset({
+                                asset: blockResult.apiReturn,
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                // }
+            });
+        }).catch(function (error) {
+            console.log(error);
+
+        });
+
+
+
+    </script>
+</body>
+
+</html>

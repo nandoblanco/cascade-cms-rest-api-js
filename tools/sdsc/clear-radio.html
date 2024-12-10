@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://cascade.sdsc.edu/";
+        const cmsAPI = "";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        readAsset({
+            type: "page",
+            id: "7e8f18a4ac140b057a7fa1990316a499",
+        }).then(function (result) {
+            console.log(result);
+            result.apiReturn.asset.page.metadata.dynamicFields[0].fieldValues.length = 0
+
+            editAsset({
+                asset: result.apiReturn,
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.log(error);
+            });
+
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

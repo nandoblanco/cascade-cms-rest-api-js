@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script>
+        const cmsUrl = "https://wcms.northwestern.edu/";
+        const cmsAPI = "";
+        const oldCT = "5fd93c04a57c421a02827d412ade1d8e";
+        const blockBA = "f7a348268169772430135e4d4cc21dd6";
+        const blockFolder = "_demo/profiles";
+        const blockSite = "Qatar-HOME-v4";
+
+    </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify.min.js"></script> -->
+    <!-- <script src='http://lovasoa.github.io/tidy-html5/tidy.js'></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        listSubscribers({
+            type: "contenttype",
+            id: oldCT,
+        }).then(function (result) {
+            console.log(result);
+            var pages = result.apiReturn.subscribers;
+            pages.forEach(function (page, i) {
+                setTimeout(function () {
+                    // if (i < 20) {
+                    if (page.type == "page") {
+                        readAsset({
+                            type: "page",
+                            id: page.id,
+                        }).then(function (result) {
+                            var pageR = result;
+                            // console.log(pageR);
+                            // console.log(pageR.apiReturn.asset.page.name);
+                            readAsset({
+                                type: "block",
+                                path: blockFolder + "/" + pageR.apiReturn.asset.page.name,
+                                siteName: blockSite
+                            }).then(function (result) {
+                                // console.log(pageR);
+                                // console.log(result);
+                                updateBlock(pageR, result);
+                                console.log("----------------------------------------");
+                            }).catch(function (error) {
+                                console.log(error);
+                                console.log("----------------------------------------");
+                                // createBlock(pageR.apiReturn.asset.page.name.trim());
+
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                    // }
+                }, i * 400);
+            });
+        });
+
+        function updateBlock(page, block) {
+            console.log(page);
+            console.log(block);
+            console.log(block.apiReturn.asset.xhtmlDataDefinitionBlock.path);
+            // name ##################### 
+            if (page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[0].text == undefined) {
+                var pageFName = "";
+            } else {
+                var pageFName = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[0].text;
+            }
+            if (page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[1].text == undefined) {
+                var pageMName = "";
+            } else {
+                var pageMName = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[1].text;
+            }
+            if (page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[2].text == undefined) {
+                var pageLName = "";
+            } else {
+                var pageLName = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[2].text;
+            }
+            if (pageMName == "") {
+                var pageName = pageFName + " " + pageLName;
+            } else {
+                var pageName = pageFName + " " + pageMName + " " + pageLName;
+            }
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[1].structuredDataNodes[0].text = pageName;
+            // depts ##################### 
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[1].structuredDataNodes[1].text = "::CONTENT-XML-SELECTOR::Leadership";
+            // titles ##################### 
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[1].structuredDataNodes.splice(2, 1);
+            page.apiReturn.asset.page.structuredData.structuredDataNodes.forEach(function (sDN, sDNi) {
+                // console.log(sDN);
+                if (sDN.identifier == "jobtitles") {
+                    // console.log(sDN.structuredDataNodes[0].text);
+                    sDN.structuredDataNodes.forEach(function (sDN2, sDNi2) {
+                        // console.log(sDN2.text);
+                        block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[1].structuredDataNodes.push({
+                            "type": "text",
+                            "identifier": "title",
+                            "text": sDN2.text
+                        })
+                    });
+                }
+            });
+            // contact ##################### 
+            var pagePhone = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[3].text;
+            var pageEmail = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[4].text;
+            var pageOffice = page.apiReturn.asset.page.structuredData.structuredDataNodes[0].structuredDataNodes[5].text;
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[2].structuredDataNodes[0].text = pagePhone;
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[2].structuredDataNodes[1].text = pageEmail;
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[2].structuredDataNodes[2].text = pageOffice;
+            // image #####################
+            page.apiReturn.asset.page.structuredData.structuredDataNodes.forEach(function (sDN, sDNi) {
+                if (sDN.identifier == "photo") {
+                    var pageImage = sDN.structuredDataNodes[0].fileId;
+                    var pageImageAlt = sDN.structuredDataNodes[1].text;
+                    if (pageImage != "3d6f30ff816977241e95c3f96f64e85d") {
+                        block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[3].structuredDataNodes[0].text = "Yes";
+                        block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[3].structuredDataNodes[1].fileId = pageImage;
+                        block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[3].structuredDataNodes[2].text = pageImageAlt;
+                    }
+                }
+            });
+            // bio #####################
+            var pageBio = "";
+            var pageBioArr = [];
+            page.apiReturn.asset.page.structuredData.structuredDataNodes.forEach(function (sDN, sDNi) {
+                // console.log(sDN);
+                if (sDN.identifier == "section") {
+                    sDN.structuredDataNodes.forEach(function (sDN2, sDN2i) {
+                        // console.log(sDN2);
+                        if (sDN2.identifier == "layout-options" && sDN2.text == "Single Column") {
+                            // console.log(sDN);
+                            // console.log(sDN.structuredDataNodes[0].text);
+                            // console.log(sDN.structuredDataNodes[4].structuredDataNodes[0].text);
+                            if (sDN.structuredDataNodes[0].text != "About" && sDN.structuredDataNodes[0].text != undefined && sDN.structuredDataNodes[0].text != "") {
+                                var pageBioHeading = "";
+                                pageBioHeading = "<h2>" + sDN.structuredDataNodes[0].text + "</h2>";
+                                pageBioArr.push(pageBioHeading);
+                            }
+                            pageBioArr.push(sDN.structuredDataNodes[4].structuredDataNodes[0].text);
+                        }
+                    });
+                }
+            });
+            pageBio = pageBioArr.join("");
+            console.log(pageBio);
+            block.apiReturn.asset.xhtmlDataDefinitionBlock.structuredData.structuredDataNodes[4].structuredDataNodes[0].text = w(pageBio);
+            // ##########################################
+            editAsset({
+                asset: block.apiReturn,
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        function createBlock(name) {
+            copyAsset({
+                type: "block",
+                id: blockBA,
+                copyParameters: {
+                    newName: name,
+                    destinationContainerIdentifier: {
+                        type: "folder",
+                        path: {
+                            path: blockFolder,
+                            siteName: blockSite
+                        }
+                    }
+                }
+            }).then(function (result) {
+                console.log(result);
+                console.log("-------");
+            }).catch(function (error) {
+                console.log(error);
+                console.log("-------");
+            });
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
