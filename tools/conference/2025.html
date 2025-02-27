@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        // TESTING
+        // const siteToCopy = "CUC25 Advanced Velocity Workshop - Work Site";
+        // const newSiteNamePrefix = "CUC25 Advanced Velocity Workshop - ";
+        // const dataDefinitionPath = "Interior Page";
+        // const users = "users-test.csv";
+        // const usergroup = "Workshop - Advanced";
+        // const password = "cuc25-advanced";
+        // const roles = "Contributor"
+        // const delay = 400;
+        // INTRO
+        const siteToCopy = "CUC25 Intro Devs Workshop - Master";
+        const newSiteNamePrefix = "CUC25 Intro Devs Workshop - ";
+        const dataDefinitionPath = "Blocks/Feature";
+        const users = "users-intro.csv";
+        const usergroup = "Workshop - Intro";
+        const password = "cuc25-intro";
+        const roles = "Contributor"
+        const delay = 400;
+        // ADVANCED
+        // const siteToCopy = "CUC25 Advanced Velocity Workshop - Work Site";
+        // const newSiteNamePrefix = "CUC25 Advanced Velocity Workshop - ";
+        // const dataDefinitionPath = "";
+        // const users = "users-advanced.csv";
+        // const usergroup = "Workshop - Advanced";
+        // const password = "cuc25-advanced";
+        // const roles = "Contributor"
+        // const delay = 400;
+
+
+        Papa.parse(users, {
+            header: true,
+            download: true,
+            skipEmptyLines: true,
+            transformHeader: function (h) {
+                return h.replace(/[\W_]+/g, "").trim();
+            },
+            complete: function (result) {
+                console.log(result);
+                // createUsers(result.data);
+                // createSites(result.data);
+                // updateSites(result.data);
+                fixSharedFields(result.data);
+            }
+        });
+
+        function createUsers(data) {
+            data.forEach(function (user, i) {
+                setTimeout(function () {
+                    console.log(user);
+                    createAsset({
+                        asset: {
+                            user: {
+                                authType: "normal",
+                                email: user.email.toLowerCase(),
+                                enabled: true,
+                                fullName: user.firstname + ' ' + user.lastname,
+                                groups: usergroup,
+                                password: password,
+                                roles: roles,
+                                username: user.email.toLowerCase(),
+                            }
+                        }
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }, i * delay);
+            });
+        }
+
+        function createSites(data) {
+            data.forEach(function (user, i) {
+                setTimeout(function () {
+                    console.log(user);
+                    copySite({
+                        originalSiteName: siteToCopy,
+                        newSiteName: newSiteNamePrefix + user.firstname + " " + user.lastname
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }, i * delay);
+            });
+        }
+
+        function updateSites(data) {
+            data.forEach(function (user, i) {
+                setTimeout(function () {
+                    console.log(user);
+                    readAsset({
+                        type: "site",
+                        siteName: "%2520", // have to double escape the site name to read Site by name instead of ID
+                        path: newSiteNamePrefix + user.firstname + " " + user.lastname
+                    }).then(function (result) {
+                        console.log(result);
+                        result.apiReturn.asset.site.roleAssignments = [{
+                            "roleId": "8",
+                            "roleName": "Site Administrator",
+                            "users": user.email.toLowerCase(),
+                        }];
+                        editAsset({
+                            asset: result.apiReturn,
+                        }).then(function (result) {
+                            console.log(result);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }, i * delay);
+            });
+        }
+
+        function fixSharedFields(data) {
+            data.forEach(function (user, i) {
+                setTimeout(function () {
+                    readAsset({
+                        type: "structureddatadefinition",
+                        path: dataDefinitionPath,
+                        siteName: newSiteNamePrefix + user.firstname + " " + user.lastname
+                    }).then(function (result) {
+                        console.log(result)
+                        let replacedSite = "site://" + siteToCopy + "/";
+                        result.apiReturn.asset.dataDefinition.xml = result.apiReturn.asset.dataDefinition.xml.replaceAll(replacedSite, "");
+                        editAsset({
+                            asset: result.apiReturn,
+                        }).then(function (result) {
+                            console.log(result);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }, i * delay);
+            });
+        }
+
+    </script>
+</body>
+
+</html>

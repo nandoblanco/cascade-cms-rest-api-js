@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        listSubscribers({
+            type: "contenttype",
+            id: "e4ee3a1cac1e004c1728240cd7bdbf11", // fill in
+        }).then(function (result) {
+            console.log(result);
+            result.apiReturn.subscribers.forEach(function (s) {
+                readAsset({
+                    type: s.type,
+                    id: s.id,
+                }).then(function (result) {
+                    console.log(result);
+                    result.apiReturn.asset.page.metadata.metaDescription = result.apiReturn.asset.page.metadata.summary;
+                    // result.apiReturn.asset.page.metadata.summary = "";
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    </script>
+</body>
+
+</html>

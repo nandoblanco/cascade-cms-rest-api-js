@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var baPagesFolder = "557193860a0000ed43bc49efcd4c8c3a";
+        readAsset({
+            type: "folder",
+            id: baPagesFolder
+        }).then(function (result) {
+            result.apiReturn.asset.folder.children.forEach(function (c, i) {
+                readAsset({
+                    type: c.type,
+                    id: c.id
+                }).then(function (result) {
+                    console.log(result);
+                    var structuredDataNodes = result.apiReturn.asset.page.structuredData.structuredDataNodes;
+                    structuredDataNodes.forEach(function (node) {
+                        if (node.type == "group" && (node.identifier == "row" || node.identifier == "nrow")) {
+                            console.log(node.structuredDataNodes);
+                            node.structuredDataNodes = [];
+                        }
+                    });
+                    editAsset({
+                        asset: result.apiReturn,
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    </script>
+</body>
+
+</html>

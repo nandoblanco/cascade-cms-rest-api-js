@@ -247,6 +247,7 @@ function camelCase(data) {
 		.replaceAll("w/ ", "")
 		.replaceAll("with ", "")
 		.replaceAll("the ", "")
+		.replaceAll("and ", "")
 		.replaceAll(/[^a-zA-Z0-9 .]+/g, "");
 	if (data.includes(" ")) {
 		var dataSplit = text.split(" ");

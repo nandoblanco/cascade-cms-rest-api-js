@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var baFolder = "557194880a0000ed43bc49ef6141f895";
+        var baPagesFolder = "557193860a0000ed43bc49efcd4c8c3a";
+        var folders = [baFolder, baPagesFolder];
+
+        folders.forEach(function (f, i) {
+            readAsset({
+                type: "folder",
+                id: f
+            }).then(function (result) {
+                // console.log(result.apiReturn.asset.folder.children);
+                result.apiReturn.asset.folder.children.forEach(function (c, i) {
+                    if (c.type == "folder" || c.type == "page") {
+                        readAsset({
+                            type: c.type,
+                            id: c.id
+                        }).then(function (result) {
+                            console.log(result);
+                            if (c.type == "folder") {
+                                var asset = result.apiReturn.asset.folder;
+                            } else {
+                                var asset = result.apiReturn.asset.page;
+                            }
+                            console.log(asset.name);
+                            asset.metadata.author = "";
+                            asset.metadata.displayName = "";
+                            asset.metadata.keywords = "";
+                            asset.metadata.metaDescription = "";
+                            asset.metadata.summary = "";
+                            asset.metadata.teaser = "";
+                            asset.metadata.title = "";
+                            asset.shouldBePublished = true;
+                            asset.shouldBeIndexed = true;
+                            asset.metadata.startDate = null;
+                            asset.metadata.endDate = null;
+                            asset.metadata.reviewDate = null;
+                            asset.expirationFolderPath = "";
+                            editAsset({
+                                asset: result.apiReturn,
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    };
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        });
+    </script>
+</body>
+
+</html>

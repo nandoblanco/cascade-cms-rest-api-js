@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+
+
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        listSites({}).then(function (result) {
+            console.log(result);
+            var sites = result.apiReturn.sites;
+            sites.forEach(function (site, i) {
+                setTimeout(function () {
+                    console.log(site.path.path);
+                    if (!site.path.path.includes("_")) {
+                        publishAsset({
+                            type: "page",
+                            path: "paw-outbound/index",
+                            siteName: site.path.path,
+                            publishInformation: {
+                                publishRelatedAssets: "true"
+                            }
+                        }).then(function (result) {
+                            console.log(result);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                }, i * 1000);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    </script>
+</body>
+
+</html>

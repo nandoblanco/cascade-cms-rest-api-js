@@ -1,0 +1,421 @@
+{
+	"read_status": "Success",
+	"sent": {
+		"type": "page",
+		"id": "40d25650c0a8002f2df3948e6020c658"
+	},
+	"apiReturn": {
+		"asset": {
+			"page": {
+				"contentTypeId": "40d03f5ec0a8002f2df3948e3e87e379",
+				"contentTypePath": "Interior",
+				"structuredData": {
+					"structuredDataNodes": [
+						{
+							"type": "group",
+							"identifier": "banner",
+							"structuredDataNodes": [
+								{
+									"type": "asset",
+									"identifier": "image",
+									"assetType": "file",
+									"recycled": false
+								},
+								{
+									"type": "text",
+									"identifier": "alt",
+									"recycled": false
+								}
+							],
+							"recycled": false
+						},
+						{
+							"type": "group",
+							"identifier": "sidebar",
+							"structuredDataNodes": [
+								{
+									"type": "text",
+									"identifier": "show",
+									"text": "Yes (Folder Block)",
+									"recycled": false
+								},
+								{
+									"type": "group",
+									"identifier": "sidebar",
+									"structuredDataNodes": [
+										{
+											"type": "group",
+											"identifier": "navigation",
+											"structuredDataNodes": [
+												{
+													"type": "text",
+													"identifier": "show",
+													"text": "Yes",
+													"recycled": false
+												},
+												{
+													"type": "text",
+													"identifier": "type",
+													"text": "Manual",
+													"recycled": false
+												},
+												{
+													"type": "text",
+													"identifier": "manual",
+													"text": "Block",
+													"recycled": false
+												},
+												{
+													"type": "asset",
+													"identifier": "block",
+													"blockId": "9e188e12c0a8002f28df3a624f225a93",
+													"blockPath": "_demo/_blocks/sidebar-nav",
+													"assetType": "block",
+													"recycled": false
+												},
+												{
+													"type": "group",
+													"identifier": "mNAv",
+													"structuredDataNodes": [
+														{
+															"type": "text",
+															"identifier": "heading",
+															"recycled": false
+														},
+														{
+															"type": "group",
+															"identifier": "link",
+															"structuredDataNodes": [
+																{
+																	"type": "text",
+																	"identifier": "label",
+																	"recycled": false
+																},
+																{
+																	"type": "text",
+																	"identifier": "type",
+																	"recycled": false
+																},
+																{
+																	"type": "asset",
+																	"identifier": "internal",
+																	"assetType": "page,file,symlink",
+																	"recycled": false
+																},
+																{
+																	"type": "text",
+																	"identifier": "external",
+																	"text": "#",
+																	"recycled": false
+																},
+																{
+																	"type": "text",
+																	"identifier": "target",
+																	"text": "Parent Window/Tab",
+																	"recycled": false
+																}
+															],
+															"recycled": false
+														}
+													],
+													"recycled": false
+												}
+											],
+											"recycled": false
+										},
+										{
+											"type": "group",
+											"identifier": "row",
+											"structuredDataNodes": [
+												{
+													"type": "text",
+													"identifier": "type",
+													"text": "None",
+													"recycled": false
+												},
+												{
+													"type": "asset",
+													"identifier": "block",
+													"assetType": "block",
+													"recycled": false
+												},
+												{
+													"type": "group",
+													"identifier": "inline",
+													"structuredDataNodes": [
+														{
+															"type": "text",
+															"identifier": "heading",
+															"recycled": false
+														},
+														{
+															"type": "text",
+															"identifier": "content",
+															"recycled": false
+														}
+													],
+													"recycled": false
+												}
+											],
+											"recycled": false
+										}
+									],
+									"recycled": false
+								}
+							],
+							"recycled": false
+						},
+						{
+							"type": "group",
+							"identifier": "nrow",
+							"structuredDataNodes": [
+								{
+									"type": "text",
+									"identifier": "type",
+									"text": "WYSIWYG",
+									"recycled": false
+								},
+								{
+									"type": "asset",
+									"identifier": "block",
+									"assetType": "block",
+									"recycled": false
+								},
+								{
+									"type": "text",
+									"identifier": "content",
+									"text": "<p>Narrow WYSIWYG Content</p>",
+									"recycled": false
+								}
+							],
+							"recycled": false
+						},
+						{
+							"type": "group",
+							"identifier": "row",
+							"structuredDataNodes": [
+								{
+									"type": "text",
+									"identifier": "type",
+									"text": "WYSIWYG Block",
+									"recycled": false
+								},
+								{
+									"type": "asset",
+									"identifier": "block",
+									"blockId": "1efdc59fc0a8005f5e2396ff8c9ffe0f",
+									"blockPath": "_demo/_blocks/wysiwyg",
+									"assetType": "block",
+									"recycled": false
+								},
+								{
+									"type": "text",
+									"identifier": "content",
+									"recycled": false
+								}
+							],
+							"recycled": false
+						},
+						{
+							"type": "text",
+							"identifier": "<legacy>",
+							"text": "",
+							"recycled": false
+						}
+					]
+				},
+				"pageConfigurations": [
+					{
+						"name": "HTML",
+						"defaultConfiguration": true,
+						"templateId": "f7c173dec0a8005f14dfeac904656880",
+						"templatePath": "_cms/templates/HTML",
+						"formatRecycled": false,
+						"pageRegions": [
+							{
+								"name": "BANNER",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "40cb6ca5c0a8002f2df3948e65b751a5",
+								"formatPath": "_cms/formats/global/banner",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "44b12848c0a8005b08a378aef9a1b54d"
+							},
+							{
+								"name": "GTM BODY",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "409d44d7c0a8002f2df3948e5e4924ef",
+								"formatPath": "_cms/formats/global/gtm/body",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "40be2389c0a8002f2df3948ece06fa9e"
+							},
+							{
+								"name": "BODY END",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "44b1a578c0a8005b08a378ae4bb03360",
+								"formatPath": "_cms/formats/global/body/end",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "44b12848c0a8005b08a378ae65edd3fd"
+							},
+							{
+								"name": "BODY START",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "44b1a593c0a8005b08a378aebe34a7e6",
+								"formatPath": "_cms/formats/global/body/start",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "44b12848c0a8005b08a378aefe5c4755"
+							},
+							{
+								"name": "BREADCRUMBS",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "44a09c5dc0a8005b08a378ae28c3f00a",
+								"formatPath": "_cms/formats/global/breadcrumbs",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "44b12848c0a8005b08a378aed19e8195"
+							},
+							{
+								"name": "SCRIPTS",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "f826044bc0a8005f14dfeac9c2b82ca9",
+								"formatPath": "_cms/formats/global/scripts",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "f825324ec0a8005f14dfeac943848dcc"
+							},
+							{
+								"name": "HEADER",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "f825e33ac0a8005f14dfeac95fdceab8",
+								"formatPath": "_cms/formats/global/header",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "f825324ec0a8005f14dfeac9b9061848"
+							},
+							{
+								"name": "FOOTER",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "f82625c8c0a8005f14dfeac939c2abe6",
+								"formatPath": "_cms/formats/global/footer",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "f825324ec0a8005f14dfeac93acd88f6"
+							},
+							{
+								"name": "DEFAULT",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "402c1963c0a8002f2df3948ecf53578c",
+								"formatPath": "_cms/formats/pages/interior",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "40d00209c0a8002f2df3948efb48a015"
+							},
+							{
+								"name": "GTM HEAD",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "409d44f7c0a8002f2df3948e3ab0db4d",
+								"formatPath": "_cms/formats/global/gtm/head",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "40be2389c0a8002f2df3948eaf058191"
+							},
+							{
+								"name": "HEAD",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatId": "f825671ac0a8005f14dfeac9acae675f",
+								"formatPath": "_cms/formats/global/head",
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "f825324ec0a8005f14dfeac99e76a3dc"
+							}
+						],
+						"includeXMLDeclaration": false,
+						"publishable": false,
+						"id": "40d00209c0a8002f2df3948e7539e5c1"
+					},
+					{
+						"name": "XML",
+						"defaultConfiguration": false,
+						"templateId": "f7cb4f48c0a8005f14dfeac914ebefc3",
+						"templatePath": "_cms/templates/XML",
+						"formatRecycled": false,
+						"pageRegions": [
+							{
+								"name": "DEFAULT",
+								"blockRecycled": false,
+								"noBlock": false,
+								"formatRecycled": false,
+								"noFormat": false,
+								"id": "f7cb4f49c0a8005f14dfeac969c7127b"
+							}
+						],
+						"includeXMLDeclaration": false,
+						"publishable": false,
+						"id": "40d00209c0a8002f2df3948ea293f6a8"
+					}
+				],
+				"linkRewriting": "inherit",
+				"shouldBePublished": true,
+				"shouldBeIndexed": true,
+				"expirationFolderRecycled": false,
+				"metadata": {
+					"displayName": "Interior",
+					"title": "Interior",
+					"summary": "",
+					"teaser": "",
+					"keywords": "",
+					"metaDescription": "",
+					"author": "",
+					"dynamicFields": [
+						{
+							"name": "showNav",
+							"fieldValues": [
+								{
+									"value": "Yes"
+								}
+							]
+						},
+						{
+							"name": "secNav",
+							"fieldValues": [
+								{
+									"value": "Yes"
+								}
+							]
+						}
+					]
+				},
+				"reviewOnSchedule": false,
+				"reviewEvery": 180,
+				"parentFolderId": "f7c16ed1c0a8005f14dfeac92fd03d6f",
+				"parentFolderPath": "_demo",
+				"lastModifiedDate": "2024-12-06T22:31:20.817Z",
+				"lastModifiedBy": "fernando.blanco",
+				"createdDate": "2024-11-18T19:49:06.758Z",
+				"createdBy": "fernando.blanco",
+				"path": "_demo/interior",
+				"siteId": "f7c16d77c0a8005f14dfeac99de4f72c",
+				"siteName": ".QS Site Template - Fernando",
+				"tags": [],
+				"name": "interior",
+				"id": "40d25650c0a8002f2df3948e6020c658"
+			}
+		},
+		"success": true
+	},
+	"url": "https://services.cascadecms.com/api/v1/read/page/40d25650c0a8002f2df3948e6020c658"
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+
+        const baseAsset = "d8510d740a0000a57321050cd81e71e5";
+        const folder = "profiles";
+        let nameArr = [];
+
+        Papa.parse('data.csv', {
+            header: true,
+            download: true,
+            skipEmptyLines: true,
+            transformHeader: function (h) {
+                return h.replace(/[\W_]+/g, "").trim();
+            },
+            complete: function (result) {
+                // console.log(result);
+                // getDepartments(result.data);
+                // createPages(result.data);
+                updatePages(result.data);
+            }
+        });
+
+        function updatePages(data) {
+            console.log(data);
+            data.forEach(function (d, i) {
+                if (d.Name != "") {
+                    setTimeout(function () {
+                        readAsset({
+                            type: "page",
+                            path: folder + "/" + getName(d)[2],
+                            siteName: cmsSite
+                        }).then(function (result) {
+                            console.log(result);
+                            var depts = [];
+                            d.Department.split("|").forEach(function (dept, i) {
+                                depts.push({ "value": dept.trim() });
+                            });
+                            result.apiReturn.asset.page.metadata.title = getName(d)[0] + " " + getName(d)[1];
+                            result.apiReturn.asset.page.metadata.displayName = getName(d)[0] + " " + getName(d)[1];
+                            result.apiReturn.asset.page.metadata.dynamicFields[0].fieldValues[0].value = getName(d)[0];
+                            result.apiReturn.asset.page.metadata.dynamicFields[1].fieldValues[0].value = getName(d)[1];
+                            result.apiReturn.asset.page.metadata.dynamicFields[2].fieldValues[0].value = d.Position;
+                            result.apiReturn.asset.page.metadata.dynamicFields[3].fieldValues = depts;
+                            result.apiReturn.asset.page.metadata.dynamicFields[4].fieldValues[0].value = d.OfficeNumber;
+                            result.apiReturn.asset.page.metadata.dynamicFields[5].fieldValues[0].value = d.EmailAddress;
+                            result.apiReturn.asset.page.metadata.dynamicFields[6].fieldValues[0].value = d.OfficeLocation;
+                            editAsset({
+                                asset: result.apiReturn,
+                            }).then(function (result) {
+                                console.log(result);
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }, i * 200);
+                }
+            });
+        }
+
+        function createPages(data) {
+            data.forEach(function (d, i) {
+                if (d.Name != "") {
+                    copyAsset({
+                        type: "page",
+                        id: baseAsset,
+                        copyParameters: {
+                            newName: getName(d)[2],
+                            destinationContainerIdentifier: {
+                                type: "folder",
+                                path: {
+                                    path: folder,
+                                    siteName: cmsSite
+                                }
+                            }
+                        }
+                    }).then(function (result) {
+                        console.log(result);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+        }
+
+        function getName(data) {
+            let tempNameArr = data.Name.split(",");
+            nameArr = [];
+            nameArr.push(tempNameArr[tempNameArr.length - 1].trim());
+            nameArr.push(tempNameArr[0].trim());
+            let firstName = nameArr[0];
+            let lastName = nameArr[1];
+            let pageName = lastName + "XSPACERX" + firstName;
+            pageName = pageName.replace("Dr. ", "").replace("Ms. ", "").replace(/[^a-z0-9]/gi, "").replace("XSPACERX", "-").toLowerCase();
+            nameArr.push(pageName);
+            return nameArr;
+        }
+
+        function getDepartments(data) {
+            let depts = [];
+            data.forEach(function (d, i) {
+                if (!depts.includes(d.Department)) {
+                    console.log(d.Department);
+                    depts.push(d.Department);
+                }
+            });
+            console.log(depts);
+        }
+
+
+    </script>
+</body>
+
+</html>

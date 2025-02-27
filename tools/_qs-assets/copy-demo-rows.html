@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+</head>
+
+
+<body>
+    <script src="../creds.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="../../cascade-restapi.js"></script>
+    <script>
+        var orig = "e10789ad0a0000fa1cf05acb08ca2b88";
+        var target = "e0faf3740a0000fa1cf05acbffb5bdfb";
+
+        readAsset({
+            type: "page",
+            id: orig,
+        }).then(function (result) {
+            // console.log(result.apiReturn.asset.page.structuredData.structuredDataNodes);
+            var origNodes = result.apiReturn.asset.page.structuredData.structuredDataNodes;
+            readAsset({
+                type: "page",
+                id: target,
+            }).then(function (result) {
+                // console.log(result.apiReturn.asset.page.structuredData.structuredDataNodes);
+                var targetNodes = result.apiReturn.asset.page.structuredData.structuredDataNodes;
+                console.log(origNodes);
+                console.log(targetNodes);
+                var cleanOrigNodes = _.drop(origNodes, 4);
+                console.log(cleanOrigNodes);
+                var cleanTargetNodes = _.slice(targetNodes, 0, -26);
+                console.log(cleanTargetNodes);
+                var searchTerm = '"identifier":"row"';
+                var replacement = '"identifier":"nrow"';
+                var cleanOrigNodesNarrow = JSON.stringify(cleanOrigNodes);
+                cleanOrigNodesNarrow = cleanOrigNodesNarrow.replaceAll(searchTerm, replacement);
+                cleanOrigNodesNarrow = JSON.parse(cleanOrigNodesNarrow);
+                // console.log (JSON.parse(JSON.stringify(obj).replace(/foo/g, 'bar')));
+                console.log(cleanOrigNodesNarrow);
+                cleanTargetNodes.push(...cleanOrigNodesNarrow);
+                cleanTargetNodes.push(...cleanOrigNodes);
+                console.log(cleanTargetNodes);
+                result.apiReturn.asset.page.structuredData.structuredDataNodes = cleanTargetNodes;
+                editAsset({
+                    asset: result.apiReturn,
+                }).then(function (result) {
+                    console.log(result);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    </script>
+</body>
+
+</html>
